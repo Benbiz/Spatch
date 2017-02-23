@@ -70,7 +70,9 @@ bool    Spatch::Parsing::AccessElement::finish(Spatch::Configuration::Config &co
     if (credential == "USER")
         type = Spatch::Configuration::Access::CredentialType::UserCred;
     else if (credential == "ASKED")
+    {
         type = Spatch::Configuration::Access::CredentialType::Asked;
+    }
     else if ((cred = getCredentialRef(conf, credential)) == nullptr)
     {
         std::cout << "[Error] Credential reference not found" << std::endl;

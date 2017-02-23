@@ -15,6 +15,7 @@
 #define CLIENT_H
 
 #include <libssh/callbacks.h>
+#include <termio.h>
 #include <memory>
 #include <poll.h>
 #include "Config.h"
@@ -36,10 +37,11 @@ namespace Spatch
             
             
             
-            void                                                proxify(std::shared_ptr<Connection> connection);
+            void                                                proxify(std::shared_ptr<Spatch::Configuration::Access> access);
             const std::shared_ptr<Connection>                   getProxifiyConnection() const;
             
             int                                                 getSlaveFd() const;
+            int                                                 writeToChannel(const void *data, uint32_t len);
             const std::shared_ptr<Spatch::Configuration::User>  getUser() const;
         private:
             
@@ -91,6 +93,8 @@ namespace Spatch
             const std::shared_ptr<Spatch::Configuration::User>  _user;
             Spatch::Ssh::Shell                                  _shell;
             std::shared_ptr<Connection>                         _connection;
+            struct termio                                       _connection_term;
+            struct termio                                       _shell_term;
         };
     }
 }

@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 
+#include <sys/ioctl.h>
 #include <pty.h>
 #include <iostream>
 #include "Client.h"
@@ -12,9 +13,8 @@ Spatch::Ssh::Client::Client(const Spatch::Configuration::Config &conf, const std
     : _conf(conf), _user(u), _connection(nullptr), _shell(conf, *this), _channel(channel), _session(ssh_channel_get_session(channel)), _event(event)
 {
     openpty(&_masterpty, &_slavepty, NULL, NULL, NULL);
+    
     _callbacks.channel_data_function = channelCallback;
-    _callbacks.channel_eof_function = NULL;
-    _callbacks.channel_close_function = NULL;
     _callbacks.userdata = this;
     ssh_callbacks_init(&_callbacks);
     ssh_set_channel_callbacks(_channel, &_callbacks);
@@ -27,6 +27,7 @@ Spatch::Ssh::Client::Client(const Spatch::Configuration::Config &conf, const std
         return ;
     
     _shell.onWelcome();
+    
 }
 
 Spatch::Ssh::Client::~Client()
@@ -49,9 +50,23 @@ bool                                        Spatch::Ssh::Client::isClose() const
     return ssh_channel_is_closed(_channel);
 }
 
-void                                        Spatch::Ssh::Client::proxify(std::shared_ptr<Spatch::Ssh::Connection> connection)
+void                                        Spatch::Ssh::Client::proxify(std::shared_ptr<Spatch::Configuration::Access> access)
 {
-    
+    if (access == nullptr)
+    {
+        _connection = nullptr;
+        _shell.printPrompt();
+    }
+    else
+    {
+        _connection = std::make_shared<Spatch::Ssh::Connection>(*this, access->getServer()->getIp(), access->getServer()->getPort(), _event);
+        if (access->getCredentialType() == Spatch::Configuration::Access::CredentialType::Provided)
+            _connection->connect(access->getCredential()->getUsername(), access->getCredential()->getPassword());
+        else if (access->getCredentialType() == Spatch::Configuration::Access::CredentialType::UserCred)
+            _connection->connect(_user->getUsername(), _user->getPassword());
+        else
+            _connection->connect();
+    }
 }
 
 const std::shared_ptr<Spatch::Ssh::Connection>           Spatch::Ssh::Client::getProxifiyConnection() const
@@ -91,8 +106,6 @@ int                                        Spatch::Ssh::Client::onSlaveEvent(int
     {
         if (!_connection)
             return (_shell.onRead());
-        else
-            std::cout << "To connection... (not implemented yet)" << std::endl;
     }
     if(revents & POLLHUP)
         return (ssh_channel_close(_channel));
@@ -100,9 +113,17 @@ int                                        Spatch::Ssh::Client::onSlaveEvent(int
     
 }
 
+int                                        Spatch::Ssh::Client::writeToChannel(const void *data, uint32_t len)
+{
+    return (ssh_channel_write(_channel, data, len));
+}
+
 int                                        Spatch::Ssh::Client::channelToMasterPty(void *data, uint32_t len)
 {
-    return(write(_masterpty, data, len));
+    if (!_connection)
+        return(write(_masterpty, data, len));
+    else
+        return (_connection->writeToChannel(data, len));
 }
 
 int                                             Spatch::Ssh::Client::getSlaveFd() const

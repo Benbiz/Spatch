@@ -39,6 +39,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/AccessElement.o \
 	${OBJECTDIR}/Client.o \
 	${OBJECTDIR}/Config.o \
+	${OBJECTDIR}/Connection.o \
 	${OBJECTDIR}/Credential.o \
 	${OBJECTDIR}/CredentialElement.o \
 	${OBJECTDIR}/Parser.o \
@@ -94,6 +95,11 @@ ${OBJECTDIR}/Config.o: Config.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Config.o Config.cpp
+
+${OBJECTDIR}/Connection.o: Connection.cpp
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Connection.o Connection.cpp
 
 ${OBJECTDIR}/Credential.o: Credential.cpp
 	${MKDIR} -p ${OBJECTDIR}

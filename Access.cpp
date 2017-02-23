@@ -7,13 +7,13 @@
 #include "Access.h"
 
 Spatch::Configuration::Access::Access(const std::string &id,const std::shared_ptr<User> user, const std::shared_ptr<Credential> cred, const std::shared_ptr<Server> serv)
-: _id(id), _user(user), _cred(cred), _serv(serv)
+: _id(id), _user(user), _cred(cred), _serv(serv), _type(Spatch::Configuration::Access::Provided)
 {
     
 }
 
 Spatch::Configuration::Access::Access(const std::string &id,const std::shared_ptr<User> user, const Spatch::Configuration::Access::CredentialType type, const std::shared_ptr<Server> serv)
-: _id(id), _user(user), _cred(nullptr), _serv(serv)
+: _id(id), _user(user), _cred(nullptr), _serv(serv), _type(type)
 {
     
 }

@@ -5,11 +5,14 @@
  */
 
 #include <iostream>
+#include <algorithm>
 #include "Proxy.h"
 
 Spatch::Ssh::Proxy::Proxy(const Spatch::Configuration::Config &conf, const int port)
     : _conf(conf), _port(port)
 {
+    ssh_threads_set_callbacks(ssh_threads_get_pthread());
+    ssh_init();
     _event = ssh_event_new();
     _bind = ssh_bind_new();
     ssh_bind_options_set(_bind, SSH_BIND_OPTIONS_BINDPORT, &port);
@@ -101,6 +104,12 @@ bool    Spatch::Ssh::Proxy::handleClients()
 
     do {
         ssh_event_dopoll(_event, 1000);
+        _clients.erase(std::remove_if(_clients.begin(), _clients.end(), [] (std::shared_ptr<Client> c)
+        {
+            if (c->isClose())
+                return true;
+            return false;
+        }), _clients.end());
     } while(true);
     return 0;
 }

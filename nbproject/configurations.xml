@@ -54,6 +54,7 @@
       </logicalFolder>
       <logicalFolder name="f3" displayName="ssh" projectFiles="true">
         <itemPath>Client.cpp</itemPath>
+        <itemPath>Connection.cpp</itemPath>
         <itemPath>Proxy.cpp</itemPath>
         <itemPath>Shell.cpp</itemPath>
       </logicalFolder>
@@ -89,8 +90,11 @@
           <architecture>2</architecture>
         </asmTool>
         <linkerTool>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/spatch</output>
           <linkerLibItems>
+            <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
             <linkerLibFileItem>C:/cygwin64/lib/libssh.dll.a</linkerLibFileItem>
+            <linkerLibFileItem>C:/cygwin64/lib/libssh_threads.dll.a</linkerLibFileItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
@@ -109,6 +113,8 @@
       <item path="Config.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Config.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Connection.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Connection.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -190,6 +196,8 @@
       <item path="Config.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Config.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Connection.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Connection.h" ex="false" tool="3" flavor2="0">
       </item>

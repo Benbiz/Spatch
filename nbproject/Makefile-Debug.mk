@@ -39,6 +39,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/AccessElement.o \
 	${OBJECTDIR}/Client.o \
 	${OBJECTDIR}/Config.o \
+	${OBJECTDIR}/Connection.o \
 	${OBJECTDIR}/Credential.o \
 	${OBJECTDIR}/CredentialElement.o \
 	${OBJECTDIR}/Parser.o \
@@ -65,13 +66,15 @@ FFLAGS=
 ASFLAGS=--64
 
 # Link Libraries and Options
-LDLIBSOPTIONS=/cygdrive/C/cygwin64/lib/libssh.dll.a
+LDLIBSOPTIONS=-lpthread /cygdrive/C/cygwin64/lib/libssh.dll.a /cygdrive/C/cygwin64/lib/libssh_threads.dll.a
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
 	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/spatch.exe
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/spatch.exe: /cygdrive/C/cygwin64/lib/libssh.dll.a
+
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/spatch.exe: /cygdrive/C/cygwin64/lib/libssh_threads.dll.a
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/spatch.exe: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
@@ -96,6 +99,11 @@ ${OBJECTDIR}/Config.o: Config.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Config.o Config.cpp
+
+${OBJECTDIR}/Connection.o: Connection.cpp
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Connection.o Connection.cpp
 
 ${OBJECTDIR}/Credential.o: Credential.cpp
 	${MKDIR} -p ${OBJECTDIR}
