@@ -25,7 +25,7 @@ int main(int argc, char** argv)
     Spatch::Configuration::Config   conf;
     Spatch::Parsing::Parser         parser(conf);
     
-    if (fb.open("test.conf",std::ios::in))
+    if (fb.open("spatch.conf",std::ios::in))
     {
         parser.parse(is);
         fb.close();

@@ -29,7 +29,7 @@ namespace Spatch
         class Client
         {
         public:
-            Client(const Spatch::Configuration::Config &conf, const std::shared_ptr<Spatch::Configuration::User> u, ssh_channel channel, ssh_event event);
+            Client(Spatch::Configuration::Config &conf, const std::shared_ptr<Spatch::Configuration::User> u, ssh_channel channel, ssh_event event);
             ~Client();
             
             bool                                                isEOF() const;
@@ -37,7 +37,7 @@ namespace Spatch
             
             
             
-            void                                                proxify(std::shared_ptr<Spatch::Configuration::Access> access);
+            void                                                proxify(std::shared_ptr<Spatch::Configuration::Access> access,const std::string &command = "");
             const std::shared_ptr<Connection>                   getProxifiyConnection() const;
             
             int                                                 getSlaveFd() const;
@@ -89,7 +89,7 @@ namespace Spatch
              * Spatch related properties 
              */
             
-            const Spatch::Configuration::Config                 &_conf;
+            Spatch::Configuration::Config                 &_conf;
             const std::shared_ptr<Spatch::Configuration::User>  _user;
             Spatch::Ssh::Shell                                  _shell;
             std::shared_ptr<Connection>                         _connection;

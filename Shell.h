@@ -26,7 +26,7 @@ namespace Spatch
         class Shell
         {
         public:
-            Shell(const Spatch::Configuration::Config &conf, Spatch::Ssh::Client &client);
+            Shell(Spatch::Configuration::Config &conf, Spatch::Ssh::Client &client);
             ~Shell();
             
             void    onWelcome();
@@ -48,6 +48,7 @@ namespace Spatch
             int    listAccesses();
             
             int    connect(std::istringstream &);
+            int    top(std::istringstream &);
             
             int    help(std::istringstream &);
             
@@ -55,12 +56,13 @@ namespace Spatch
              * Admin parsing function
              */
             
-            int    adminList(std::istringstream &);
-            int    adminListServers();
-            int    adminListUsers();
-            int    adminListAccesses(std::istringstream &);
+            int     adminList(std::istringstream &);
+            int     adminListServers();
+            int     adminListUsers();
+            int     adminListAccesses(std::istringstream &);
+            int     reloadConfig(std::istringstream &);
             
-            const Spatch::Configuration::Config             &_conf;
+            Spatch::Configuration::Config             &_conf;
             Spatch::Ssh::Client                             &_client;
             static std::map<std::string, parsingCallback>   _commands;
             static std::map<std::string, parsingCallback>   _admincommands;

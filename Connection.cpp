@@ -31,10 +31,10 @@ Spatch::Ssh::Connection::~Connection()
     if (_channel != nullptr)
     {
         ssh_event_remove_session(_event, ssh_channel_get_session(_channel));
-        if (!ssh_channel_is_closed(_channel))
-            ssh_channel_close(_channel);
         if (!ssh_channel_is_eof(_channel))
             ssh_channel_send_eof(_channel);
+        if (!ssh_channel_is_closed(_channel))
+            ssh_channel_close(_channel);
         ssh_channel_free(_channel);
     }
     if (_masterpty != -1)
@@ -57,15 +57,18 @@ void Spatch::Ssh::Connection::chan_close(ssh_session session, ssh_channel channe
     return(connection->onClose());
 }
 
-bool    Spatch::Ssh::Connection::connect(const std::string &username, const std::string &password)
+bool    Spatch::Ssh::Connection::connect(const std::string &username, const std::string &password, const std::string &command)
 {
     _username = username;
     _password = password;
+    _command = command;
     connect();
 }
 
-bool    Spatch::Ssh::Connection::connect()
+bool    Spatch::Ssh::Connection::connect(const std::string &command)
 {
+    if (!command.empty())
+        _command = command;
     if (_username.empty() || _password.empty())
     {
         askAuth();
@@ -93,16 +96,27 @@ bool    Spatch::Ssh::Connection::connect()
     rc = ssh_channel_open_session(_channel);
     if (rc != SSH_OK)
         return false;
+    
     rc = ssh_channel_request_pty(_channel);
     if (rc != SSH_OK)
         return false;
     rc = ssh_channel_change_pty_size(_channel, 80, 24);
     if (rc != SSH_OK)
         return false;
-    rc = ssh_channel_request_shell(_channel);
-    if (rc != SSH_OK)
-        return false;
     ssh_event_add_session(_event, ssh_channel_get_session(_channel));
+    if (_command.empty())
+    {
+        rc = ssh_channel_request_shell(_channel);
+        if (rc != SSH_OK)
+            return false;
+    }
+    else
+    {
+        rc = ssh_channel_request_exec(_channel, _command.c_str());
+        if (rc != SSH_OK)
+            return false;
+    }
+
     return true;
 }
 

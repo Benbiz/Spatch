@@ -28,8 +28,8 @@ namespace Spatch
             Connection(Spatch::Ssh::Client &client, const std::string &host, const int port, ssh_event event);
             ~Connection();
             
-            bool    connect(const std::string &username, const std::string &password);
-            bool    connect();
+            bool    connect(const std::string &username, const std::string &password, const std::string &command = "");
+            bool    connect(const std::string &command = "");
             int     writeToChannel(void *buf, uint32_t len);
             bool    closeChannel();
         private:
@@ -64,6 +64,7 @@ namespace Spatch
             
             std::string                     _username;
             std::string                     _password;
+            std::string                     _command;
             
             pthread_t                       _thread;
             int                             _masterpty;

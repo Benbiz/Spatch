@@ -33,6 +33,8 @@ namespace Spatch
             Config();
             ~Config();
             
+            void                                                clearAll();
+            
             bool                                                addUser(std::shared_ptr<User> u);
             const std::vector<std::shared_ptr<User>>            &getUsers() const;
             bool                                                addServer(std::shared_ptr<Server> s);

@@ -30,7 +30,7 @@ namespace Spatch
         class Proxy
         {
         public:
-            Proxy(const Spatch::Configuration::Config &conf, const int port);
+            Proxy(Spatch::Configuration::Config &conf, const int port);
             ~Proxy();
             
             void    setRSAFile(const std::string &RSAFile);
@@ -50,7 +50,7 @@ namespace Spatch
             ssh_event                               _event;
             std::string                             _rsafile;
             std::string                             _dsafile;
-            const Spatch::Configuration::Config     &_conf;
+            Spatch::Configuration::Config           &_conf;
             int                                     _port;
             std::vector<std::shared_ptr<Client>>    _clients;
 

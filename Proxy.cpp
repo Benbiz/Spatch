@@ -8,7 +8,7 @@
 #include <algorithm>
 #include "Proxy.h"
 
-Spatch::Ssh::Proxy::Proxy(const Spatch::Configuration::Config &conf, const int port)
+Spatch::Ssh::Proxy::Proxy(Spatch::Configuration::Config &conf, const int port)
     : _conf(conf), _port(port)
 {
     ssh_threads_set_callbacks(ssh_threads_get_pthread());

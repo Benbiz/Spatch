@@ -81,3 +81,11 @@ const std::vector<std::shared_ptr<Spatch::Configuration::Access>>        &Spatch
 {
     return this->_accesses;
 }
+
+void        Spatch::Configuration::Config::clearAll()
+{
+    _users.clear();
+    _servers.clear();
+    _accesses.clear();
+    _credentials.clear();
+}
