@@ -9,32 +9,12 @@
 #include <iostream>
 #include "Client.h"
 
-static void test3(ssh_session session,
-                                            ssh_channel channel,
-                                            const char *signal,
-                                            void *userdata)
-{
-    std::cout << "signal = " << signal << std::endl;
-}
- static int test2(ssh_session session, ssh_channel channel, const char *term, int width, int height, int pxwidth, int pwheight, void *userdata)
- {
-     std::cout << "size = " << pxwidth << "x" << pwheight << std::endl;
- }
-
-static int test(ssh_session session, ssh_channel channel, int width, int height, int pxwidth, int pwheight, void *userdata)
-{
-    std::cout << "size = " << pxwidth << "x" << pwheight << std::endl;
-}
-
 Spatch::Ssh::Client::Client(Spatch::Configuration::Config &conf, const std::shared_ptr<Spatch::Configuration::User> u, ssh_channel channel, ssh_event event)
     : _conf(conf), _user(u), _connection(nullptr), _shell(conf, *this), _channel(channel), _session(ssh_channel_get_session(channel)), _event(event)
 {
     openpty(&_masterpty, &_slavepty, NULL, NULL, NULL);
     
     _callbacks.channel_data_function = channelCallback;
-    _callbacks.channel_pty_window_change_function = test;
-    _callbacks.channel_pty_request_function = test2;
-    _callbacks.channel_signal_function = test3;
     _callbacks.userdata = this;
     ssh_callbacks_init(&_callbacks);
     ssh_set_channel_callbacks(_channel, &_callbacks);
